@@ -100,16 +100,86 @@ const getVideoById = asyncHandler(async(req,res) => {
                 foreignField:"_id",
                 as:"owner",
                 pipeline:[
-
+                    {
+                        $project:{
+                            fullname: 1,
+                            username: 1,
+                            thumbnail :1,
+                            _id:1
+                        }
+                    }
                 ]
             }
-        }
+        },
+        {
+            $unwind:"$owner"
+        },{
+            $lookup:{
+                from: "views",
+                localField:"_id",
+                foreignField:"videoId",
+                as:"views"
+            }
+        },{
+      $addFields: {
+        totalViews: { $size: "$views" }, 
+      },
+    },
+    {
+      $project: {
+        views: 0,
+      },
+    },
     ])
+
+    return res.status(200)
+    .json(
+        new ApiResponse(
+            200,
+            video,
+            "video Fetched Successfully"
+        )
+    )
 })
 
 const updateVideo = asyncHandler(async(req,res) => {
      const {videoId} = req.params
+     const {title, discription} = req.body
+     
 
+     const videoRes = await Video.findById(videoId)
+
+     console.log(videoRes)
+     await deleteOnCloudinary(videoRes.thumbnail._id);
+
+     const thumbnailFile = req.files?.thumbnail[0].path
+     console.log(thumbnailFile)
+
+     const thumbnail = await uploadOnCloudinary(thumbnailFile)
+     
+     console.log(thumbnail)
+
+ 
+     const video = await Video.findByIdAndUpdate(
+        videoId,
+        {
+            $set:{
+                title,
+                discription,
+                thumbnail,
+            }
+        },
+        {new: true}
+     ).select("-password -refreshToken")
+
+     return res.status(200)
+     .json(
+        new ApiResponse(
+            200,
+            video,
+            "Video Successfully upgrated"
+        )
+     )
 })
 
 const deleteVideo = asyncHandler(async(req,res) => {

@@ -300,6 +300,7 @@ const updateAccountAvatar = asyncHandler(async(req,res) => {
     }
 
     //TODO : delete old image  - assignment
+    
 
     const avatar = await uploadOnCloudinary(avatarLocalPath)
 
