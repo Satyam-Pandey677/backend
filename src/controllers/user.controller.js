@@ -4,8 +4,9 @@ import { User } from '../models/user.model.js';
 import {uploadOnCloudinary} from "../utils/cloudinary.js"
 import { ApiResponse } from '../utils/ApiResponse.js';
 import jwt from "jsonwebtoken"
-import { json } from 'express';
 import mongoose from 'mongoose';
+
+
  
 
 const generateAccessAndRefreshTokens =async (userId) => {
@@ -261,7 +262,6 @@ const getCurrentUser = asyncHandler(async(req, res) => {
         "Current user Fetched Successfully"
     ))
 })
-
 
 const UpdateAccountUser = asyncHandler(async(req, res) => {
     const {fullname , email} = req.body

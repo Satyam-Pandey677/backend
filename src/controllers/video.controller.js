@@ -10,7 +10,7 @@ const getAllVideos = asyncHandler(async(req,res) => {
     // const {page = 1, limit =10 , query, sortBy,sortType, userId} = query;
 
     //Todo : get all videos bases on the query, sort and pagination
-    console.log("hello there")
+
 
 })
 
